@@ -32,6 +32,7 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { ListsResolver } from './_resolvers/list.resolver';
 import { MessagesResolver } from './_resolvers/messages.resolver';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -49,6 +50,7 @@ export function tokenGetter() {
       MemberCardComponent,
       MemberDetailComponent,
       MemberEditComponent,
+      MemberMessagesComponent,
       PhotoEditorComponent,
       TimeAgoPipe,
       
