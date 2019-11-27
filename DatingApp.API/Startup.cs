@@ -21,6 +21,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
+using DatingApp.API.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace DatingApp.API
 {
@@ -56,18 +60,22 @@ namespace DatingApp.API
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-            .AddNewtonsoftJson(opt =>{
-                    opt.SerializerSettings.ReferenceLoopHandling =
-                    Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
-                });            
-            services.AddCors();
-            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-            services.AddAutoMapper(typeof(DatingRepository).Assembly);
-            services.AddTransient<Seed>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
-            services.AddScoped<IDatingRepository, DatingRepository>();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //This is a very relexed password should not be used in production
+            IdentityBuilder builder = services.AddIdentityCore<User>(opt =>
+            {
+                opt.Password.RequireDigit = false;
+                opt.Password.RequiredLength = 4;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+            });
+
+            builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
+            builder.AddEntityFrameworkStores<DataContext>();
+            builder.AddRoleValidator<RoleValidator<Role>>();
+            builder.AddRoleManager<RoleManager<Role>>();
+            builder.AddSignInManager<SignInManager<User>>();
+
+             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -79,6 +87,25 @@ namespace DatingApp.API
                     ValidateAudience = false,
                 }; 
             });
+
+            services.AddControllers(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .AddNewtonsoftJson(opt =>{
+                    opt.SerializerSettings.ReferenceLoopHandling =
+                    Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
+                });            
+            services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
+            services.AddTransient<Seed>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();           
             services.AddScoped<LogUserActivity>();
         }
 
