@@ -8,9 +8,7 @@ namespace DatingApp.API.Data
 {
     public class Seed
     {
-        
-
-        public static void SeedUsers(UserManager<User> userManager, RoleManager<Role> roleManager)
+            public static void SeedUsers(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             if(!userManager.Users.Any())
             {

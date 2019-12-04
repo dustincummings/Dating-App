@@ -63,9 +63,10 @@ namespace DatingApp.API.Controllers
             if(result.Succeeded)
             {
                 var appUser = _mapper.Map<UserForListDTO>(user);
+                
                 return Ok(new
                 {
-                  token = GenerateJwtToken(user),
+                  token = GenerateJwtToken(user).Result,
                   user = appUser
                 });
             }
