@@ -35,6 +35,9 @@ import { MessagesResolver } from './_resolvers/messages.resolver';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { HasRoleDirective } from './_directives/hasRole.directive';
+import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { AdminService } from './_services/admin.service';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -62,8 +65,9 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       PhotoEditorComponent,
       TimeAgoPipe,
       AdminPanelComponent,
-      HasRoleDirective
-      
+      HasRoleDirective,
+      PhotoManagementComponent,
+      UserManagementComponent      
    ],
    imports: [
       BrowserModule,
@@ -98,7 +102,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MemberEditResolver,
       ListsResolver,
       MessagesResolver,
-      { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
+      { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig },
+      AdminService
       
    ],
    bootstrap: [
