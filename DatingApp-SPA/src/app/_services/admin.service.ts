@@ -17,4 +17,14 @@ getUsersWithRoles(){
 updateUserRoles(user:User, roles:{}){
   return this.http.post(this.baseUrl + 'admin/editRoles/'+ user.userName, roles);
 }
+getPhotosForApproval(){
+  return this.http.get(this.baseUrl + 'admin/photosformoderation');
+}
+approvePhoto(photoId){
+  return this.http.post(this.baseUrl + 'admin/approvephoto/' + photoId, {});
+}
+rejectPhoto(photoId){
+  return this.http.post(this.baseUrl + 'admin/rejectphoto/' + photoId, {});
+
+}
 }
